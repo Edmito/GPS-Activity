@@ -31,11 +31,13 @@ class MainActivity : AppCompatActivity() {
     private lateinit var buttonShowOnMap1: Button
     private lateinit var buttonShowOnMap2: Button
     private lateinit var spinnerUnits: Spinner
+    private lateinit var buttonShowRoute: Button
     private var latitude1: Double? = null
     private var longitude1: Double? = null
     private var latitude2: Double? = null
     private var longitude2: Double? = null
     private var distanceInMeters: Double? = null
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +53,8 @@ class MainActivity : AppCompatActivity() {
         buttonShowOnMap1 = findViewById(R.id.buttonShowOnMap1)
         buttonShowOnMap2 = findViewById(R.id.buttonShowOnMap2)
         spinnerUnits = findViewById(R.id.spinnerUnits)
+
+        buttonShowRoute = findViewById(R.id.buttonShowRoute)
 
         // Configurar Spinner com Adapter
         ArrayAdapter.createFromResource(
@@ -91,6 +95,25 @@ class MainActivity : AppCompatActivity() {
 
         buttonShowOnMap2.setOnClickListener {
             showOnMap(latitude2, longitude2)
+        }
+
+        buttonShowRoute.setOnClickListener {
+            showRouteOnMap(latitude1, longitude1, latitude2, longitude2)
+        }
+    }
+
+    private fun showRouteOnMap(lat1: Double?, lon1: Double?, lat2: Double?, lon2: Double?) {
+        lat1?.let { startLat ->
+            lon1?.let { startLon ->
+                lat2?.let { endLat ->
+                    lon2?.let { endLon ->
+                        val geoUri = "https://www.google.com/maps/dir/?api=1&origin=$startLat,$startLon&destination=$endLat,$endLon"
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(geoUri))
+                        intent.setPackage("com.google.android.apps.maps")
+                        startActivity(intent)
+                    }
+                }
+            }
         }
     }
 
@@ -176,6 +199,7 @@ class MainActivity : AppCompatActivity() {
         if (latitude1 != null && longitude1 != null && latitude2 != null && longitude2 != null) {
             distanceInMeters = distanceInMeters(latitude1!!, longitude1!!, latitude2!!, longitude2!!)
             updateDistanceText()
+            buttonShowRoute.visibility = Button.VISIBLE // Torna o botão visível quando as localizações estão disponíveis
         }
     }
 
