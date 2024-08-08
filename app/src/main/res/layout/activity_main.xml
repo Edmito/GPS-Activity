@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="16dp"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/textViewLocation1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Localização 1: "
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/buttonGetLocation1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pegar Localização 1" />
+
+    <TextView
+        android:id="@+id/textViewLocation2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Localização 2: "
+        android:textSize="18sp" />
+
+    <Button
+        android:id="@+id/buttonGetLocation2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Pegar Localização 2" />
+
+    <Spinner
+        android:id="@+id/spinnerUnits"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:entries="@array/units_array"
+        android:layout_marginTop="16dp"/>
+
+    <TextView
+        android:id="@+id/textViewDistance"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Distancia: "
+        android:textSize="18sp"
+        android:layout_marginTop="16dp" />
+
+    <Button
+        android:id="@+id/buttonShowOnMap1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mostrar Localização 1 no Mapa"
+        android:visibility="gone" />
+
+    <Button
+        android:id="@+id/buttonShowOnMap2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Mostrar Localização 2 no Mapa"
+        android:visibility="gone" />
+
+</LinearLayout>

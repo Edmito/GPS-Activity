@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Gps</string>
+    <string-array name="units_array">
+        <item>Metros</item>
+        <item>Quilômetros</item>
+    </string-array>
+</resources>
