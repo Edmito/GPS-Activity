@@ -18,6 +18,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/textViewAccuracy1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Precisão 1: "
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewLocation1" />
+
     <Button
         android:id="@+id/buttonGetLocation1"
         android:layout_width="wrap_content"
@@ -25,7 +36,7 @@
         android:layout_marginTop="8dp"
         android:text="Pegar Localização 1"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLocation1" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewAccuracy1" />
 
     <TextView
         android:id="@+id/textViewLocation2"
@@ -38,6 +49,17 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/buttonGetLocation1" />
 
+    <TextView
+        android:id="@+id/textViewAccuracy2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="Precisão 2: "
+        android:textColor="@android:color/black"
+        android:textSize="16sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewLocation2" />
+
     <Button
         android:id="@+id/buttonGetLocation2"
         android:layout_width="wrap_content"
@@ -45,7 +67,7 @@
         android:layout_marginTop="8dp"
         android:text="Pegar Localização 2"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewLocation2" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewAccuracy2" />
 
     <Spinner
         android:id="@+id/spinnerUnits"

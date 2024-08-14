@@ -15,6 +15,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationResult
 import kotlin.math.atan2
 import kotlin.math.cos
 import kotlin.math.sin
@@ -26,18 +28,21 @@ class MainActivity : AppCompatActivity() {
     private lateinit var textViewLocation1: TextView
     private lateinit var textViewLocation2: TextView
     private lateinit var textViewDistance: TextView
+    private lateinit var textViewAccuracy1: TextView
+    private lateinit var textViewAccuracy2: TextView
     private lateinit var buttonGetLocation1: Button
     private lateinit var buttonGetLocation2: Button
     private lateinit var buttonShowOnMap1: Button
     private lateinit var buttonShowOnMap2: Button
+    private lateinit var buttonShowRouteOnMap: Button
     private lateinit var spinnerUnits: Spinner
-    private lateinit var buttonShowRoute: Button
     private var latitude1: Double? = null
     private var longitude1: Double? = null
     private var latitude2: Double? = null
     private var longitude2: Double? = null
+    private var accuracy1: Float? = null
+    private var accuracy2: Float? = null
     private var distanceInMeters: Double? = null
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -48,13 +53,14 @@ class MainActivity : AppCompatActivity() {
         textViewLocation1 = findViewById(R.id.textViewLocation1)
         textViewLocation2 = findViewById(R.id.textViewLocation2)
         textViewDistance = findViewById(R.id.textViewDistance)
+        textViewAccuracy1 = findViewById(R.id.textViewAccuracy1)
+        textViewAccuracy2 = findViewById(R.id.textViewAccuracy2)
         buttonGetLocation1 = findViewById(R.id.buttonGetLocation1)
         buttonGetLocation2 = findViewById(R.id.buttonGetLocation2)
         buttonShowOnMap1 = findViewById(R.id.buttonShowOnMap1)
         buttonShowOnMap2 = findViewById(R.id.buttonShowOnMap2)
+        buttonShowRouteOnMap = findViewById(R.id.buttonShowRoute)
         spinnerUnits = findViewById(R.id.spinnerUnits)
-
-        buttonShowRoute = findViewById(R.id.buttonShowRoute)
 
         // Configurar Spinner com Adapter
         ArrayAdapter.createFromResource(
@@ -97,23 +103,8 @@ class MainActivity : AppCompatActivity() {
             showOnMap(latitude2, longitude2)
         }
 
-        buttonShowRoute.setOnClickListener {
+        buttonShowRouteOnMap.setOnClickListener {
             showRouteOnMap(latitude1, longitude1, latitude2, longitude2)
-        }
-    }
-
-    private fun showRouteOnMap(lat1: Double?, lon1: Double?, lat2: Double?, lon2: Double?) {
-        lat1?.let { startLat ->
-            lon1?.let { startLon ->
-                lat2?.let { endLat ->
-                    lon2?.let { endLon ->
-                        val geoUri = "https://www.google.com/maps/dir/?api=1&origin=$startLat,$startLon&destination=$endLat,$endLon"
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(geoUri))
-                        intent.setPackage("com.google.android.apps.maps")
-                        startActivity(intent)
-                    }
-                }
-            }
         }
     }
 
@@ -147,13 +138,6 @@ class MainActivity : AppCompatActivity() {
                     Manifest.permission.ACCESS_COARSE_LOCATION
                 ) != PackageManager.PERMISSION_GRANTED
             ) {
-                // TODO: Consider calling
-                //    ActivityCompat#requestPermissions
-                // here to request the missing permissions, and then overriding
-                //   public void onRequestPermissionsResult(int requestCode, String[] permissions,
-                //                                          int[] grantResults)
-                // to handle the case where the user grants the permission. See the documentation
-                // for ActivityCompat#requestPermissions for more details.
                 return
             }
             fusedLocationClient.lastLocation
@@ -162,21 +146,27 @@ class MainActivity : AppCompatActivity() {
                         if (locationNumber == 1) {
                             latitude1 = it.latitude
                             longitude1 = it.longitude
+                            accuracy1 = it.accuracy
                             textViewLocation1.text = "Localização 1: $latitude1, $longitude1"
+                            textViewAccuracy1.text = "Precisão 1: ${accuracy1?.toInt()} metros"
                             buttonShowOnMap1.visibility = Button.VISIBLE
                         } else {
                             latitude2 = 37.422009 // Simulação para Localização 2
                             longitude2 = -122.0855 // Simulação para Localização 2
+                            accuracy2 = 10.0f // Simulação para precisão
                             textViewLocation2.text = "Localização 2: $latitude2, $longitude2"
+                            textViewAccuracy2.text = "Precisão 2: ${accuracy2?.toInt()} metros"
                             buttonShowOnMap2.visibility = Button.VISIBLE
                         }
                         calculateDistance()
                     } ?: run {
                         if (locationNumber == 1) {
                             textViewLocation1.text = "Localização 1: Indisponível"
+                            textViewAccuracy1.text = "Precisão 1: Indisponível"
                             buttonShowOnMap1.visibility = Button.GONE
                         } else {
                             textViewLocation2.text = "Localização 2: Indisponível"
+                            textViewAccuracy2.text = "Precisão 2: Indisponível"
                             buttonShowOnMap2.visibility = Button.GONE
                         }
                     }
@@ -195,11 +185,26 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    private fun showRouteOnMap(lat1: Double?, lon1: Double?, lat2: Double?, lon2: Double?) {
+        lat1?.let { startLat ->
+            lon1?.let { startLon ->
+                lat2?.let { endLat ->
+                    lon2?.let { endLon ->
+                        val uri = "https://www.google.com/maps/dir/?api=1&origin=$startLat,$startLon&destination=$endLat,$endLon"
+                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(uri))
+                        intent.setPackage("com.google.android.apps.maps")
+                        startActivity(intent)
+                    }
+                }
+            }
+        }
+    }
+
     private fun calculateDistance() {
         if (latitude1 != null && longitude1 != null && latitude2 != null && longitude2 != null) {
             distanceInMeters = distanceInMeters(latitude1!!, longitude1!!, latitude2!!, longitude2!!)
             updateDistanceText()
-            buttonShowRoute.visibility = Button.VISIBLE // Torna o botão visível quando as localizações estão disponíveis
+            buttonShowRouteOnMap.visibility = Button.VISIBLE
         }
     }
 
@@ -240,6 +245,7 @@ class MainActivity : AppCompatActivity() {
                 getLastLocation(1)
             } else {
                 textViewLocation1.text = "Permissão de localização negada"
+                textViewAccuracy1.text = "Precisão: Indisponível"
                 buttonShowOnMap1.visibility = Button.GONE
             }
         }
